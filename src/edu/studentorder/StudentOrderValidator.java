@@ -1,9 +1,9 @@
 package edu.studentorder;
-import edu.studentorder.domain.AnswerChildren;
-import edu.studentorder.domain.AnswerCityRegister;
-import edu.studentorder.domain.AnswerStudent;
-import edu.studentorder.domain.AnswerWedding;
 import edu.studentorder.domain.StudentOrder;
+import edu.studentorder.domain.children.AnswerChildren;
+import edu.studentorder.domain.register.AnswerCityRegister;
+import edu.studentorder.domain.student.AnswerStudent;
+import edu.studentorder.domain.wedding.AnswerWedding;
 import edu.studentorder.mail.MailSender;
 import edu.studentorder.validator.ChildrenValidator;
 import edu.studentorder.validator.CityRegisterValidator;

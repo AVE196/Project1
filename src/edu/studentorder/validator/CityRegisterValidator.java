@@ -1,8 +1,10 @@
 package edu.studentorder.validator;
-import edu.studentorder.domain.AnswerCityRegister;
-import edu.studentorder.domain.CityRegisterCheckerResponse;
 import edu.studentorder.domain.StudentOrder;
+import edu.studentorder.domain.register.AnswerCityRegister;
+import edu.studentorder.domain.register.CityRegisterCheckerResponse;
 import edu.studentorder.exception.CityRegisterException;
+import edu.studentorder.validator.register.CityRegisterChecker;
+import edu.studentorder.validator.register.FakeCityRegisterChecker;
 
 public class CityRegisterValidator {
 	
@@ -23,7 +25,7 @@ public class CityRegisterValidator {
 		CityRegisterCheckerResponse cans = personChecker.checkPerson(so.getChild());
 		}
 		catch (CityRegisterException ex){
-			ex.printStackTrace();
+			ex.printStackTrace(System.out);
 			
 		}
 	

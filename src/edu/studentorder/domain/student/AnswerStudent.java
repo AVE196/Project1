@@ -1,4 +1,4 @@
-package edu.studentorder.domain;
+package edu.studentorder.domain.student;
 
 public class AnswerStudent {
 	
