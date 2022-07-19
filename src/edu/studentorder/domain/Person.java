@@ -7,7 +7,6 @@ public abstract class Person {
 	private String givenName;
 	private String patronymic;
 	private LocalDate dateOfBirth;
-    private Adress adress;
     
     
     
@@ -45,13 +44,6 @@ public abstract class Person {
 	public void setDateOfBirth(LocalDate dateOfBirth) {
 		this.dateOfBirth = dateOfBirth;
 	}
-	public Adress getAdress() {
-		return adress;
-	}
-	public void setAdress(Adress adress) {
-		this.adress = adress;
-	}
-	
     
 	
 }

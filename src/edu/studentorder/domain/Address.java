@@ -1,12 +1,20 @@
 package edu.studentorder.domain;
 
-public class Adress {
+public class Address {
 
 	private String postCode;
 	private String street;
 	private String building;
 	private String extension;
 	private String apartmen;
+	
+	public Address(String postCode, String street, String building, String extension, String apartmen) {
+		this.postCode = postCode;
+		this.street = street;
+		this.building = building;
+		this.extension = extension;
+		this.apartmen = apartmen;
+	}
 	
 	public String getPostCode() {
 		return postCode;
