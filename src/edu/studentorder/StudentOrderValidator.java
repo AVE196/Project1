@@ -1,4 +1,7 @@
 package edu.studentorder;
+import java.util.LinkedList;
+import java.util.List;
+
 import edu.studentorder.domain.StudentOrder;
 import edu.studentorder.domain.children.AnswerChildren;
 import edu.studentorder.domain.register.AnswerCityRegister;
@@ -32,18 +35,19 @@ public class StudentOrderValidator {
 	}
 	
 	public void checkAll() {
-		StudentOrder[] soArray = readStudentOrders();
+		List<StudentOrder> soArray = readStudentOrders();
 		for(StudentOrder so : soArray) {
 			checkOneOrder(so);
 		}
 	}
 	
-	public StudentOrder[] readStudentOrders() {
-		StudentOrder[] soArray = new StudentOrder[3];
-		for (int i = 0; i < soArray.length; i++) {
-			soArray[i] = SaveStudentOrder.buildStudentOrder(i);
+	public List<StudentOrder> readStudentOrders() {
+		List<StudentOrder> soList = new LinkedList<>();
+		for (int i = 0; i < 5; i++) {
+			StudentOrder so = SaveStudentOrder.buildStudentOrder(i);
+			soList.add(so);
 		}
-		return soArray;
+		return soList;
 	}
 	
 	public void checkOneOrder(StudentOrder so) {
@@ -52,7 +56,7 @@ public class StudentOrderValidator {
 		//AnswerChildren childAns = checkChildren(so);
 		//AnswerStudent studAns = checkStudent(so);
 		
-		sendMail(so);		
+		// sendMail(so);		
 	}
 	
 	public AnswerCityRegister checkCityRegister(StudentOrder so) {
