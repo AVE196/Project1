@@ -1,4 +1,8 @@
 package edu.studentorder;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.time.LocalDate;
 
 import edu.studentorder.domain.Address;
@@ -10,7 +14,21 @@ public class SaveStudentOrder {
 
 	
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception{
+		Class.forName("org.postgresql.Driver");
+		Connection con = DriverManager.getConnection(
+				"jdbc:postgresql://localhost:5432/jc_student",
+				"postgres",
+				"pfqrfvjz"
+				);
+		
+		Statement stmt = con.createStatement();
+		ResultSet rs = stmt.executeQuery("SELECT * FROM jc_street");
+		while(rs.next()) {
+			System.out.println(rs.getLong(1) + " : " + rs.getString(2));
+		}
+		
+		
 		//buildStudentOrder();
 		
 	}
