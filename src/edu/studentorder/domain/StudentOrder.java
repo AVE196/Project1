@@ -12,7 +12,7 @@ public class StudentOrder {
 	private Adult wife;
 	private List<Child> children;
 	private String MarriageSertificateID;
-	private String MarriageOffice;
+	private RegisterOffice MarriageOffice;
 	private LocalDate MarriageDate;
 	
 	public long getStudentOrderID() {
@@ -51,10 +51,11 @@ public class StudentOrder {
 	public void setMarriageSertificateID(String marriageSertificateID) {
 		MarriageSertificateID = marriageSertificateID;
 	}
-	public String getMarriageOffice() {
+
+	public RegisterOffice getMarriageOffice() {
 		return MarriageOffice;
 	}
-	public void setMarriageOffice(String marriageOffice) {
+	public void setMarriageOffice(RegisterOffice marriageOffice) {
 		MarriageOffice = marriageOffice;
 	}
 	public LocalDate getMarriageDate() {
