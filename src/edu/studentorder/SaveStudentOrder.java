@@ -52,7 +52,7 @@ public class SaveStudentOrder {
 */		
 		StudentOrder so = buildStudentOrder(10);
 		StudentOrderDaoImpl sodi = new StudentOrderDaoImpl();
-		long count = sodi.SaveStudentOrder(so);
+		long count = sodi.saveStudentOrder(so);
 		System.out.println(count);
 
 	}
@@ -104,7 +104,7 @@ public class SaveStudentOrder {
 		
 		Child child2 = new Child("Иванов","Валерий","Григорьевич", LocalDate.of(2010, 3, 17));
 		child2.setCertificateNumber("" + (4000000 + id));
-		child2.setIssueDate(LocalDate.of(2010, 3, 19));
+		child2.setIssueDate(LocalDate.of(2010, 5, 7));
 		RegisterOffice ro3 = new RegisterOffice(3L, "", "");
 		child2.setIssueDepartmen(ro3);
 		child2.setAddress(address);

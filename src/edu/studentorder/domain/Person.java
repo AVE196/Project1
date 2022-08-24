@@ -7,16 +7,15 @@ public abstract class Person {
 	private String givenName;
 	private String patronymic;
 	private LocalDate dateOfBirth;
-    
-    
-    
+	private Address address;
+
 	public Person(String surName, String givenName, String patronymic, LocalDate dateOfBirth) {
 		this.surName = surName;
 		this.givenName = givenName;
 		this.patronymic = patronymic;
 		this.dateOfBirth = dateOfBirth;
 	}
-	
+
 	public Person() {		
 	}
 	
@@ -45,5 +44,12 @@ public abstract class Person {
 		this.dateOfBirth = dateOfBirth;
 	}
     
+	public Address getAddress() {
+		return address;
+	}
+
+	public void setAddress(Address address) {
+		this.address = address;
+	}
 	
 }

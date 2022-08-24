@@ -10,7 +10,6 @@ public class Child extends Person{
 	private String certificateNumber;
 	private LocalDate issueDate;
 	private RegisterOffice issueDepartmen;
-	private Address address;
 
 	
 	public String getCertificateNumber() {
@@ -32,13 +31,7 @@ public class Child extends Person{
 	public void setIssueDepartmen(RegisterOffice issueDepartmen) {
 		this.issueDepartmen = issueDepartmen;
 	}
-	public Address getAddress() {
-		return address;
-	}
-	public void setAddress(Address address) {
-		this.address = address;
-	}
-	
+
 	
 	
 }
