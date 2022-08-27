@@ -1,5 +1,6 @@
 package edu.studentorder;
 import java.time.LocalDate;
+import java.util.List;
 
 import edu.studentorder.dao.StudentOrderDaoImpl;
 import edu.studentorder.domain.Address;
@@ -55,6 +56,11 @@ public class SaveStudentOrder {
 		StudentOrderDaoImpl sodi = new StudentOrderDaoImpl();
 		long count = sodi.saveStudentOrder(so);
 		System.out.println(count);
+		
+		List<StudentOrder> orders = sodi.getStudentOrders();
+		for (StudentOrder order : orders) {
+			System.out.println(order.getStudentOrderID() + " " + order.getStudentOrderDate() + " " + order.getStudentOrderstatus() + " " + order.getMarriageDate());
+		}
 
 	}
 

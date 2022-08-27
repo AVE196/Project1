@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.LinkedList;
 import java.util.List;
 
 import edu.studentorder.config.Config;
@@ -13,6 +14,7 @@ import edu.studentorder.domain.Address;
 import edu.studentorder.domain.Adult;
 import edu.studentorder.domain.Child;
 import edu.studentorder.domain.Person;
+import edu.studentorder.domain.RegisterOffice;
 import edu.studentorder.domain.StudentOrder;
 import edu.studentorder.domain.StudentOrderStatus;
 import edu.studentorder.exception.DaoException;
@@ -34,10 +36,11 @@ public class StudentOrderDaoImpl implements StudentOrderDao{
 			+ " c_certificate_date, c_register_office_id, c_post_index, c_street_code, c_building, c_extension, c_apartmen)"
 			+ "	VALUES (?, ?, ?, ?, ?, ?,"
 			+ "?, ?, ?, ?, ?, ?, ?);";
+	
+	public static final String GET_ORDERS = "SELECT * FROM jc_student_order WHERE student_order_status = 0 ORDER BY student_order_date";
 
 	// TODO refactoring - make one method
-		private Connection getConnection() throws SQLException, ClassNotFoundException {
-			Class.forName("org.postgresql.Driver");
+		private Connection getConnection() throws SQLException {
 			Connection con = DriverManager.getConnection(
 					Config.getProperty(Config.DB_URL),
 					Config.getProperty(Config.DB_LOGIN), 
@@ -75,15 +78,11 @@ public class StudentOrderDaoImpl implements StudentOrderDao{
 				catch (SQLException ex) {
 					con.rollback();
 					throw ex;
-				}
-			    
-			    
+				}			    
 			} catch (Exception ex) {
 				throw new DaoException(ex);
 			}
-			
-			
-			return result;
+		return result;
 		}
 
 		private void saveChildren(Connection con, StudentOrder so, long soID) throws SQLException {
@@ -130,5 +129,42 @@ public class StudentOrderDaoImpl implements StudentOrderDao{
 			stmt.setString(start+1, person.getGivenName());
 			stmt.setString(start+2, person.getPatronymic());
 			stmt.setDate(start+3, java.sql.Date.valueOf(person.getDateOfBirth()));
+		}
+
+		@Override
+		public List<StudentOrder> getStudentOrders() throws DaoException {
+			List<StudentOrder> result = new LinkedList<>();
+ 			try (Connection con = getConnection(); 
+ 					PreparedStatement stmt = con.prepareStatement(GET_ORDERS)) {
+ 				ResultSet rs = stmt.executeQuery();
+ 				while (rs.next()) {
+ 				StudentOrder so = new StudentOrder();
+ 				fillStudentOrder(rs, so);
+ 				fillMarriage(rs, so);
+ 				result.add(so);
+ 				}
+ 				rs.close();			
+ 				
+			} catch (SQLException ex) {
+				throw new DaoException(ex);
+			}
+			return result;
+
+		}
+
+
+
+		private void fillStudentOrder(ResultSet rs, StudentOrder so) throws SQLException{
+			so.setStudentOrderID(rs.getLong("student_order_id"));
+			so.setStudentOrderstatus(StudentOrderStatus.fromValue(rs.getInt("student_order_status")));
+			so.setStudentOrderDate(rs.getTimestamp("student_order_date").toLocalDateTime());
+		}
+		
+		private void fillMarriage(ResultSet rs, StudentOrder so) throws SQLException{
+			so.setMarriageSertificateID(rs.getString("sertificate_id"));
+			Long roID = rs.getLong("register_office_id");
+			RegisterOffice ro = new RegisterOffice(roID, "", "");
+			so.setMarriageOffice(ro);
+			so.setMarriageDate(rs.getDate("marriage_date").toLocalDate());
 		}
 }
