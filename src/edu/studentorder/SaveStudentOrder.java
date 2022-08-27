@@ -9,6 +9,7 @@ import edu.studentorder.domain.PassportOffice;
 import edu.studentorder.domain.RegisterOffice;
 import edu.studentorder.domain.Street;
 import edu.studentorder.domain.StudentOrder;
+import edu.studentorder.domain.University;
 
 public class SaveStudentOrder {
 
@@ -82,7 +83,8 @@ public class SaveStudentOrder {
 		PassportOffice po1 = new PassportOffice(1L, "", "");
 		husband.setIssueDepartment(po1);
 		husband.setStudentID("" + (100 + id));
-		husband.setUniversity("УРФУ");
+		husband.setUniversity(new University(2L, ""));
+		husband.setStudentID("HH12345");
 		husband.setAddress(address);
 		
 		Adult wife = new Adult("Иванова","Екатерина","Олеговна", LocalDate.of(1991, 5, 13));
@@ -92,7 +94,8 @@ public class SaveStudentOrder {
 		PassportOffice po2 = new PassportOffice(2L, "", "");
 		wife.setIssueDepartment(po2);
 		wife.setStudentID("" + (200 + id));
-		wife.setUniversity("УрГЮУ");
+		wife.setUniversity(new University(1L, ""));
+		wife.setStudentID("WW12345");
 		wife.setAddress(address);
 		
 		Child child1 = new Child("Иванов","Лев","Григорьевич", LocalDate.of(2010, 3, 17));
