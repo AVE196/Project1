@@ -59,7 +59,7 @@ public class SaveStudentOrder {
 		
 		List<StudentOrder> orders = sodi.getStudentOrders();
 		for (StudentOrder order : orders) {
-			System.out.println(order.getStudentOrderID() + " " + order.getStudentOrderDate() + " " + order.getStudentOrderstatus() + " " + order.getMarriageDate());
+			System.out.println(order.getWife().getIssueDepartment().getOfficeName() + " - " + order.getHusband().getIssueDepartment().getOfficeName());
 		}
 
 	}

@@ -13,10 +13,13 @@ import edu.studentorder.config.Config;
 import edu.studentorder.domain.Address;
 import edu.studentorder.domain.Adult;
 import edu.studentorder.domain.Child;
+import edu.studentorder.domain.PassportOffice;
 import edu.studentorder.domain.Person;
 import edu.studentorder.domain.RegisterOffice;
+import edu.studentorder.domain.Street;
 import edu.studentorder.domain.StudentOrder;
 import edu.studentorder.domain.StudentOrderStatus;
+import edu.studentorder.domain.University;
 import edu.studentorder.exception.DaoException;
 
 public class StudentOrderDaoImpl implements StudentOrderDao{
@@ -37,7 +40,16 @@ public class StudentOrderDaoImpl implements StudentOrderDao{
 			+ "	VALUES (?, ?, ?, ?, ?, ?,"
 			+ "?, ?, ?, ?, ?, ?, ?);";
 	
-	public static final String GET_ORDERS = "SELECT * FROM jc_student_order WHERE student_order_status = 0 ORDER BY student_order_date";
+	public static final String GET_ORDERS = "SELECT so.*, ro.r_office_area_id, ro.r_office_name,"
+			+ " po_h.p_office_area_id as h_p_office_area_id,"
+			+ " po_h.p_office_name as h_p_office_name,"
+			+ " po_w.p_office_area_id as w_p_office_area_id,"
+			+ " po_w.p_office_name as w_p_office_name"
+			+ " FROM jc_student_order so"
+			+ " INNER JOIN jc_register_office ro ON ro.r_office_id = so.register_office_id"
+			+ " INNER JOIN jc_passport_office po_h ON po_h.p_office_id = so.h_passport_office"
+			+ " INNER JOIN jc_passport_office po_w ON po_w.p_office_id = so.w_passport_office"
+			+ " WHERE so.student_order_status = 0 ORDER BY student_order_date";
 
 	// TODO refactoring - make one method
 		private Connection getConnection() throws SQLException {
@@ -136,23 +148,26 @@ public class StudentOrderDaoImpl implements StudentOrderDao{
 			List<StudentOrder> result = new LinkedList<>();
  			try (Connection con = getConnection(); 
  					PreparedStatement stmt = con.prepareStatement(GET_ORDERS)) {
+ 				
  				ResultSet rs = stmt.executeQuery();
  				while (rs.next()) {
  				StudentOrder so = new StudentOrder();
  				fillStudentOrder(rs, so);
  				fillMarriage(rs, so);
+ 				Adult husband = fillAdult(rs, "h_");
+ 				Adult wife = fillAdult(rs, "w_");
+ 				so.setHusband(husband);
+ 				so.setWife(wife);
+ 				
  				result.add(so);
  				}
- 				rs.close();			
  				
+ 				rs.close();			
 			} catch (SQLException ex) {
 				throw new DaoException(ex);
 			}
 			return result;
-
 		}
-
-
 
 		private void fillStudentOrder(ResultSet rs, StudentOrder so) throws SQLException{
 			so.setStudentOrderID(rs.getLong("student_order_id"));
@@ -163,8 +178,48 @@ public class StudentOrderDaoImpl implements StudentOrderDao{
 		private void fillMarriage(ResultSet rs, StudentOrder so) throws SQLException{
 			so.setMarriageSertificateID(rs.getString("sertificate_id"));
 			Long roID = rs.getLong("register_office_id");
-			RegisterOffice ro = new RegisterOffice(roID, "", "");
+			String areaID = rs.getString("r_office_area_id");
+			String areaName = rs.getString("r_office_name");
+			RegisterOffice ro = new RegisterOffice(roID, areaID, areaName);
 			so.setMarriageOffice(ro);
 			so.setMarriageDate(rs.getDate("marriage_date").toLocalDate());
 		}
+
+		private Adult fillAdult(ResultSet rs, String pref) throws SQLException {
+			Adult adult = new Adult();
+			adult.setSurName(rs.getString(pref + "sur_name"));
+			adult.setGivenName(rs.getString(pref + "given_name"));
+			adult.setPatronymic(rs.getString(pref + "patronymic"));
+			adult.setDateOfBirth(rs.getDate(pref + "date_of_birth").toLocalDate());
+			adult.setPassportSeria(rs.getString(pref + "passport_seria"));
+			adult.setPassportNumber(rs.getString(pref + "passport_number"));
+			adult.setIssueDate(rs.getDate(pref + "issueDate").toLocalDate());
+			long poID = rs.getLong(pref + "passport_office");
+			String poAreaID = rs.getString(pref + "p_office_area_id");
+			String poName = rs.getString(pref + "p_office_name");
+			PassportOffice po = new PassportOffice(poID, poAreaID, poName);
+			adult.setIssueDepartment(po);
+			Street street = new Street(rs.getLong(pref + "street_code"), "");
+			Address address = new Address(rs.getString(pref + "post_index"), street, rs.getString(pref + "building"), 
+										rs.getString(pref + "extension"), rs.getString(pref + "apartmen"));
+			adult.setAddress(address);
+			University university = new University(rs.getLong(pref + "university_id"), "");
+			adult.setUniversity(university);
+			adult.setStudentID(rs.getString(pref + "student_number"));			
+			return adult;
+		}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
