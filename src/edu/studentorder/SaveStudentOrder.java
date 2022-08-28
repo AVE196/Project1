@@ -2,6 +2,7 @@ package edu.studentorder;
 import java.time.LocalDate;
 import java.util.List;
 
+import edu.studentorder.dao.DictionaryDaoImpl;
 import edu.studentorder.dao.StudentOrderDaoImpl;
 import edu.studentorder.domain.Address;
 import edu.studentorder.domain.Adult;
@@ -17,7 +18,7 @@ public class SaveStudentOrder {
 	
 	
 	public static void main(String[] args) throws Exception{
-/*
+		/*	
 		List<Street> streets = new DictionaryDaoImpl().findStreet("про");
 		for (Street str: streets) {
 			System.out.println(str.getStreetName());

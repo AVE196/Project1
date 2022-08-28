@@ -24,7 +24,8 @@ public class DictionaryDaoImpl implements DictionaryDao {
 	
 // TODO refactoring - make one method
 	private Connection getConnection() throws SQLException, ClassNotFoundException {
-		Class.forName("org.postgresql.Driver");
+// TODO next line?
+//		Class.forName("org.postgresql.Driver");
 		Connection con = DriverManager.getConnection(
 				Config.getProperty(Config.DB_URL),
 				Config.getProperty(Config.DB_LOGIN), 
