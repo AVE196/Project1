@@ -1,6 +1,7 @@
 package edu.studentorder;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import edu.studentorder.dao.DictionaryDaoImpl;
 import edu.studentorder.dao.StudentOrderDaoImpl;
@@ -53,14 +54,14 @@ public class SaveStudentOrder {
 			System.out.println(c.getAreaId() + ":" + c.getAreaName());
 		}
 */		
-		StudentOrder so = buildStudentOrder(10);
+//		StudentOrder so = buildStudentOrder(10);
 		StudentOrderDaoImpl sodi = new StudentOrderDaoImpl();
-		long count = sodi.saveStudentOrder(so);
-		System.out.println(count);
+//		long count = sodi.saveStudentOrder(so);
+//		System.out.println(count);
 		
 		List<StudentOrder> orders = sodi.getStudentOrders();
 		for (StudentOrder order : orders) {
-			System.out.println(order.getWife().getIssueDepartment().getOfficeName() + " - " + order.getHusband().getIssueDepartment().getOfficeName());
+			System.out.println(order.getChildren().stream().map(ch -> ch.getGivenName()).collect(Collectors.joining(";")));
 		}
 
 	}
