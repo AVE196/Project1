@@ -59,6 +59,22 @@ public class StudentOrderDaoImpl implements StudentOrderDao{
 			+ " INNER JOIN jc_register_office ro ON soc.c_register_office_id = ro.r_office_id"
 			+ " WHERE soc.student_order_id IN ";
 	
+	public static final String SELECT_ORDERS_FULL = "SELECT so.*, ro.r_office_area_id, ro.r_office_name,"
+			+ " po_h.p_office_area_id as h_p_office_area_id,"
+			+ " po_h.p_office_name as h_p_office_name,"
+			+ " po_w.p_office_area_id as w_p_office_area_id,"
+			+ " po_w.p_office_name as w_p_office_name,"
+			+ " soc.*,"
+			+ " ro_c.r_office_name as c_r_office_name,"
+			+ " ro_c.r_office_area_id as c_r_office_area_id"
+			+ " FROM jc_student_order so"
+			+ " INNER JOIN jc_register_office ro ON ro.r_office_id = so.register_office_id"
+			+ " INNER JOIN jc_passport_office po_h ON po_h.p_office_id = so.h_passport_office"
+			+ " INNER JOIN jc_passport_office po_w ON po_w.p_office_id = so.w_passport_office"
+			+ " INNER JOIN jc_student_child soc ON soc.student_order_id = so.student_order_id"
+			+ " INNER JOIN jc_register_office ro_c ON ro_c.r_office_id = soc.c_register_office_id"
+			+ " WHERE so.student_order_status = ? ORDER BY student_order_date";
+	
 	// TODO refactoring - make one method
 		private Connection getConnection() throws SQLException {
 			Connection con = DriverManager.getConnection(
@@ -151,8 +167,33 @@ public class StudentOrderDaoImpl implements StudentOrderDao{
 			stmt.setDate(start+3, java.sql.Date.valueOf(person.getDateOfBirth()));
 		}
 
+		public List<StudentOrder> getStudentOrdersOneSelect() throws DaoException {
+			List<StudentOrder> result = new LinkedList<>();
+ 			try (Connection con = getConnection(); 
+ 					PreparedStatement stmt = con.prepareStatement(SELECT_ORDERS_FULL)) {
+ 				stmt.setInt(1, StudentOrderStatus.START.ordinal());
+ 				ResultSet rs = stmt.executeQuery();
+ 				while (rs.next()) {
+ 				StudentOrder so = new StudentOrder();
+ 				fillStudentOrder(rs, so);
+ 				fillMarriage(rs, so);
+ 				Adult husband = fillAdult(rs, "h_");
+ 				Adult wife = fillAdult(rs, "w_");
+ 				so.setHusband(husband);
+ 				so.setWife(wife);
+ 				
+ 				result.add(so);
+ 				}
+ 				rs.close();	
+ 				findChildren(con, result);
+			} catch (SQLException ex) {
+				throw new DaoException(ex);
+			}
+			return result;
+		}
+		
 		@Override
-		public List<StudentOrder> getStudentOrders() throws DaoException {
+		public List<StudentOrder> getStudentOrdersTwoSelect() throws DaoException {
 			List<StudentOrder> result = new LinkedList<>();
  			try (Connection con = getConnection(); 
  					PreparedStatement stmt = con.prepareStatement(SELECT_ORDERS)) {
