@@ -53,7 +53,7 @@ public class StudentOrderDaoImpl implements StudentOrderDao{
 			+ " INNER JOIN jc_register_office ro ON ro.r_office_id = so.register_office_id"
 			+ " INNER JOIN jc_passport_office po_h ON po_h.p_office_id = so.h_passport_office"
 			+ " INNER JOIN jc_passport_office po_w ON po_w.p_office_id = so.w_passport_office"
-			+ " WHERE so.student_order_status = ? ORDER BY student_order_date";
+			+ " WHERE so.student_order_status = ? ORDER BY student_order_date LIMIT ?";
 
 	public static final String SELECT_CHILD ="SELECT soc.*,"
 			+ " ro.r_office_name as c_r_office_name," 
@@ -76,7 +76,7 @@ public class StudentOrderDaoImpl implements StudentOrderDao{
 			+ " INNER JOIN jc_passport_office po_w ON po_w.p_office_id = so.w_passport_office"
 			+ " INNER JOIN jc_student_child soc ON soc.student_order_id = so.student_order_id"
 			+ " INNER JOIN jc_register_office ro_c ON ro_c.r_office_id = soc.c_register_office_id"
-			+ " WHERE so.student_order_status = ? ORDER BY student_order_date";
+			+ " WHERE so.student_order_status = ? ORDER BY so.student_order_id LIMIT ?";
 	
 	// TODO refactoring - make one method
 		private Connection getConnection() throws SQLException {
@@ -172,10 +172,13 @@ public class StudentOrderDaoImpl implements StudentOrderDao{
 
 		public List<StudentOrder> getStudentOrdersOneSelect() throws DaoException {
 			List<StudentOrder> result = new LinkedList<>();
+			int counter = 0;
+			int limit = Integer.parseInt(Config.getProperty(Config.DB_LIMIT));
  			try (Connection con = getConnection(); 
  					PreparedStatement stmt = con.prepareStatement(SELECT_ORDERS_FULL)) {
  				Map<Long, StudentOrder> maps = new HashMap<>();
  				stmt.setInt(1, StudentOrderStatus.START.ordinal());
+ 				stmt.setInt(2, limit);
  				ResultSet rs = stmt.executeQuery();
  				while (rs.next()) {
  					Long soID = rs.getLong("student_order_id");
@@ -186,12 +189,15 @@ public class StudentOrderDaoImpl implements StudentOrderDao{
  					} 
  					StudentOrder so = maps.get(soID);
  					so.addChild(fillChildren(rs));
- 					
+ 					counter++;
  				}
  				rs.close();	
 			} catch (SQLException ex) {
 				throw new DaoException(ex);
 			}
+ 			if (counter >= limit) {
+ 				result.remove((result.size() -1));
+ 			}
 			return result;
 		}
 		
@@ -201,6 +207,7 @@ public class StudentOrderDaoImpl implements StudentOrderDao{
  			try (Connection con = getConnection(); 
  					PreparedStatement stmt = con.prepareStatement(SELECT_ORDERS)) {
  				stmt.setInt(1, StudentOrderStatus.START.ordinal());
+ 				stmt.setInt(2, Integer.parseInt(Config.DB_LIMIT));
  				ResultSet rs = stmt.executeQuery();
  				while (rs.next()) {
  				StudentOrder so = getFullStudentOrder(rs);
