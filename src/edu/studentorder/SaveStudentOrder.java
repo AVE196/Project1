@@ -59,11 +59,19 @@ public class SaveStudentOrder {
 //		long count = sodi.saveStudentOrder(so);
 //		System.out.println(count);
 		
-		List<StudentOrder> orders = sodi.getStudentOrders();
-		for (StudentOrder order : orders) {
-			System.out.println(order.getChildren().stream().map(ch -> ch.getGivenName()).collect(Collectors.joining(";")));
-		}
+//		List<StudentOrder> orders = sodi.getStudentOrdersTwoSelect();
+//		for (StudentOrder order : orders) {
+//			System.out.println(order.getChildren().stream().map(ch -> ch.getGivenName()).collect(Collectors.joining(";")));
+//		}
 
+		List<StudentOrder> orders = sodi.getStudentOrdersOneSelect();
+		for (StudentOrder order : orders) {
+			List<Child> ch = order.getChildren();
+			for (Child c : ch) {
+				System.out.println(c.getGivenName());
+			}
+		}
+		
 	}
 
 	static long saveStudentOrder(StudentOrder studentOrder) {
